@@ -1,0 +1,13 @@
+{
+  "name": "card-shop",
+  "version": "1.0.0",
+  "description": "学习演示项目",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9"
+  }
+}
