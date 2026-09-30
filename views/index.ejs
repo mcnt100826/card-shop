@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>商品商店</title>
+</head>
+<body>
+    <h2>商品列表</h2>
+    <% goods.forEach(item=>{ %>
+        <div style="border:1px solid #ccc;padding:10px;margin:8px;">
+            <h3><%=item.name%></h3>
+            <p>价格：<%=item.price%></p>
+            <p><%=item.desc%></p>
+            <form action="/buy" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="goodsId" value="<%=item.id%>">
+                <p>上传付款截图：<input type="file" name="payimg" required></p>
+                <button type="submit">提交订单等待审核</button>
+            </form>
+        </div>
+    <% }) %>
+    <br>
+    <a href="/admin">管理员后台登录</a>
+</body>
+</html>
