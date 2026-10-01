@@ -86,10 +86,46 @@ tr:hover{
 .del-btn:hover{
   background:#dc2626;
 }
+.edit-btn{
+  background-color:#3b82f6;
+  color:#fff;
+  border:none;
+  padding:7px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-right:6px;
+}
+.edit-btn:hover{
+  background:#2563eb;
+}
 .empty-tip{
   text-align:center;
   padding:30px;
   color:#64748b;
+}
+
+/* 弹窗样式 */
+.modal{
+  display:none;
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.5);
+  align-items:center;
+  justify-content:center;
+}
+.modal-box{
+  background:white;
+  padding:24px;
+  border-radius:14px;
+  width:90%;
+  max-width:420px;
+}
+.modal h3{
+  text-align:center;
+}
+.modal.active{
+  display:flex;
 }
 </style>
 </head>
@@ -128,6 +164,7 @@ tr:hover{
           <td><%=item.name%></td>
           <td><%=item.price%></td>
           <td>
+            <button class="edit-btn" onclick="openEdit(<%=index%>,'<%=item.name%>','<%=item.price%>')">编辑</button>
             <form action="/del-goods/<%=index%>" method="post" style="display:inline">
               <button class="del-btn">删除商品</button>
             </form>
@@ -139,5 +176,29 @@ tr:hover{
     <% } %>
   </div>
 </div>
+
+<!-- 编辑弹窗 -->
+<div class="modal" id="editModal">
+  <div class="modal-box">
+    <h3>✏️ 修改商品</h3>
+    <form action="/edit-goods" method="post">
+      <input type="hidden" name="idx" id="editIdx">
+      <label>商品名称</label>
+      <input type="text" name="name" id="editName" required>
+      <label>商品价格</label>
+      <input type="text" name="price" id="editPrice" required>
+      <button class="add-btn" type="submit">保存修改</button>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEdit(idx,name,price){
+  document.getElementById("editIdx").value = idx
+  document.getElementById("editName").value = name
+  document.getElementById("editPrice").value = price
+  document.getElementById("editModal").classList.add("active")
+}
+</script>
 </body>
 </html>
