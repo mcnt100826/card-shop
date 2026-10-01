@@ -1,20 +1,49 @@
-<h1>商品列表</h1>
+<div class="container" style="max-width:900px;margin:30px auto;padding:0 15px;font-family:system-ui">
+  <!-- 商家名称 -->
+  <div style="text-align:center;margin-bottom:20px">
+    <h1 style="color:#222">✨ 你的店铺名称 ✨</h1>
+    <p style="color:#666">在线自助下单平台</p>
+  </div>
 
-<% goods.forEach(item=>{ %>
-<div class="goods-card">
-  <h3><%=item.name %></h3>
-  <div class="price">价格: <%=item.price %></div>
-  <form action="/submit-order" method="post">
-    <input type="hidden" name="goodsName" value="<%=item.name%>">
-    <input type="hidden" name="price" value="<%=item.price%>">
-    <div class="upload-area">
-      <label>上传付款截图：</label>
-      <input type="file" name="img">
+  <!-- 公告栏 -->
+  <div style="background:#fff3cd;border:1px solid #ffecb5;padding:16px;border-radius:8px;margin-bottom:24px">
+    <h4 style="margin:0 0 8px 0;color:#856404">📢 店铺公告</h4>
+    <p style="margin:0;color:#856404">
+      1. 下单后请保存订单号，用于查询审核状态<br>
+      2. 审核时间：工作日 10:00 - 22:00<br>
+      3. 如有问题，请联系客服
+    </p>
+  </div>
+
+  <!-- 商品分类 -->
+  <div style="margin-bottom:24px">
+    <h3>📦 商品分类</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <span style="background:#007bff;color:white;padding:6px 14px;border-radius:20px">全部商品</span>
+      <span style="background:#28a745;color:white;padding:6px 14px;border-radius:20px">卡密类</span>
+      <span style="background:#dc3545;color:white;padding:6px 14px;border-radius:20px">账号类</span>
+      <span style="background:#6c757d;color:white;padding:6px 14px">道具类</span>
     </div>
-    <button type="submit">提交订单等待审核</button>
-  </form>
-</div>
-<% }) %>
+  </div>
 
-<a href="/search" class="admin-link">订单状态查询</a>
-<a href="/admin" class="admin-link">管理员后台登录</a>
+  <!-- 商品列表（你后端传进来的 goodsList，自动循环渲染） -->
+  <h3>🛒 选购商品</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
+    <% goodsList.forEach(function(item){ %>
+      <div style="border:1px solid #eee;border-radius:10px;padding:16px">
+        <h4 style="margin:0 0 8px 0"><%= item.name %></h4>
+        <p style="color:red;font-size:20px;margin:0 0 12px 0"><%= item.price %></p>
+        <form action="/submit-order" method="post">
+          <input type="hidden" name="goodsName" value="<%= item.name %>">
+          <input type="hidden" name="price" value="<%= item.price %>">
+          <button type="submit" style="width:100%;padding:8px;background:#007bff;color:white;border:none;border-radius:6px;cursor:pointer">立即下单</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- 订单查询入口 -->
+  <div style="margin-top:30px;text-align:center">
+    <a href="/search" style="padding:10px 20px;background:#28a745;color:white;border-radius:8px;text-decoration:none">🔍 查询订单状态</a>
+  </div>
+</div>
