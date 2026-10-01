@@ -6,7 +6,7 @@ const port = process.env.PORT || 3000
 app.use(express.urlencoded({extended:true}))
 app.set('view engine','ejs')
 
-// 【内存存储订单，重启服务全部清空！学习用】
+// 内存存储订单
 let orderList = []
 
 // 首页
@@ -27,7 +27,6 @@ app.get('/admin',(req,res)=>{
 app.post('/admin',(req,res)=>{
   const {user,pwd} = req.body
   if(user === "admin" && pwd === "123456"){
-    // 登录成功跳转到订单管理页面
     res.redirect('/order-admin')
   }else{
     res.send("<h1>❌账号密码错误</h1><a href='/admin'>重新登录</a>")
@@ -39,11 +38,18 @@ app.get('/order-admin',(req,res)=>{
   res.render('orderAdmin',{orders:orderList})
 })
 
-// 提交订单接口
+// 提交订单接口，默认状态待审核 pending
 app.post('/submit-order',(req,res)=>{
   const {goodsName,price} = req.body
-  orderList.push({goodsName,price})
+  orderList.push({goodsName,price, status:"pending"})
   res.send("<h2>✅订单提交成功！等待管理员审核</h2><a href='/'>返回首页</a>")
+})
+
+// 【新增】审核通过接口
+app.post('/audit-order/:idx',(req,res)=>{
+  const index = req.params.idx
+  orderList[index].status = "ok"
+  res.redirect('/order-admin')
 })
 
 // 删除订单接口
@@ -56,6 +62,3 @@ app.post('/del-order/:idx',(req,res)=>{
 app.listen(port, () => {
   console.log(`服务启动`)
 })
-
-
-
