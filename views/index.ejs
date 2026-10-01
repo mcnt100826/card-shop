@@ -43,11 +43,15 @@ button:hover{background:#2563eb;}
 <div class="goods-card">
   <h3><%=item.name %></h3>
   <div class="price">价格：<%=item.price %></div>
-  <div class="upload-area">
-    <label>上传付款截图：</label>
-    <input type="file">
-  </div>
-  <button>提交订单等待审核</button>
+  <form action="/submit-order" method="post">
+    <input type="hidden" name="goodsName" value="<%=item.name%>">
+    <input type="hidden" name="price" value="<%=item.price%>">
+    <div class="upload-area">
+      <label>上传付款截图：</label>
+      <input type="file" name="img">
+    </div>
+    <button type="submit">提交订单等待审核</button>
+  </form>
 </div>
 <% }) %>
 
