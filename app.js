@@ -96,13 +96,19 @@ app.post('/del-goods/:idx', checkLogin, (req,res)=>{
   goodsList.splice(index,1)
   res.redirect('/goods-admin')
 })
+// 新增商品编辑
+app.post('/edit-goods', checkLogin, (req,res)=>{
+  const {idx,name,price} = req.body
+  goodsList[idx].name = name
+  goodsList[idx].price = price
+  res.redirect('/goods-admin')
+})
+// ==============================
 
-// ==========【新增：导出订单接口】==========
+// ==========导出订单接口==========
 app.get('/export-order', checkLogin, (req,res)=>{
-  // 设置下载头，文件名为orders.csv
   res.setHeader('Content-Type','text/csv;charset=utf-8')
   res.setHeader('Content-Disposition','attachment;filename=orders.csv')
-  // 表头
   let csv = "订单编号,商品名称,商品价格,订单状态\n"
   orderList.forEach(item=>{
     const statusText = item.status === "ok" ? "已审核通过" : "待审核"
@@ -146,7 +152,7 @@ app.post('/del-order/:idx', checkLogin, (req,res)=>{
 // 退出登录
 app.get('/logout',(req,res)=>{
   req.session.destroy()
-  res.send("<h2>✅已退出登录</h2><a href='/'>登录后台</a>")
+  res.send("<h2>✅已退出登录</h2><a href='/admin'>登录后台</a>")
 })
 
 app.listen(port, () => {
