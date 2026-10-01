@@ -1,14 +1,13 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <title>管理员登录</title>
-</head>
-<body>
-    <h2>后台登录</h2>
-    <form action="/admin/login" method="post">
-        <p>密码：<input type="password" name="pwd"></p>
-        <button type="submit">登录</button>
-    </form>
-</body>
-</html>
+<div class="login-box">
+  <h2>用户登录</h2>
+  <form method="post">
+    <label>账号</label>
+    <input name="username" type="text">
+    <label>密码</label>
+    <input name="password" type="password">
+    <button type="submit">登录</button>
+  </form>
+  <div style="text-align:center;margin-top:20px">
+    <a href="/">返回首页</a>
+  </div>
+</div>
