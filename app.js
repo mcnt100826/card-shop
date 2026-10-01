@@ -1,12 +1,14 @@
 const express = require('express')
 const session = require('express-session')
+const layouts = require('express-ejs-layouts')
 const app = express()
 const port = process.env.PORT || 3000
 
 // 表单解析
 app.use(express.urlencoded({extended:true}))
 app.set('view engine','ejs')
-
+app.use(layouts)
+app.set('layout', 'layout')
 // 配置session
 app.use(session({
   secret: 'my-secret-123456',
