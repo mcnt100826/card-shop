@@ -95,6 +95,17 @@ tr:hover{
   padding:30px;
   color:#64748b;
 }
+.export-btn{
+  display:inline-block;
+  background:#22c55e;
+  color:white;
+  padding:8px 14px;
+  border-radius:6px;
+  text-decoration:none;
+}
+.export-btn:hover{
+  background:#16a34a;
+}
 </style>
 </head>
 <body>
@@ -105,6 +116,9 @@ tr:hover{
   <a class="back-link" href="/">← 返回商品首页</a>
 
   <div class="card">
+    <div style="margin-bottom:16px;text-align:right;">
+      <a class="export-btn" href="/export-order">📥导出全部订单</a>
+    </div>
     <% if(orders.length === 0){ %>
       <div class="empty-tip">暂无订单，等待用户提交</div>
     <% }else{ %>
