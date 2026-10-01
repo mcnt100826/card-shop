@@ -112,8 +112,8 @@ tr:hover{
     <table>
       <thead>
         <tr>
+          <th>订单编号</th>
           <th>商品名称</th>
-          <th>商品价格</th>
           <th>订单状态</th>
           <th>操作</th>
         </tr>
@@ -121,6 +121,7 @@ tr:hover{
       <tbody>
         <% orders.forEach((item,index)=>{ %>
         <tr>
+          <td><%=item.orderId%></td>
           <td><%=item.goodsName%></td>
           <td><%=item.price%></td>
           <td>
