@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>订单查询</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui, sans-serif;}
+body{
+  background-color:#f0f4f8;
+  padding:24px;
+}
+.container{
+  max-width:500px;
+  margin:80px auto;
+}
+.box{
+  background:#fff;
+  padding:30px;
+  border-radius:14px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.08);
+}
+h2{
+  text-align:center;
+  color:#1e293b;
+  margin-bottom:24px;
+}
+input{
+  width:100%;
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:8px;
+  font-size:16px;
+  margin-bottom:16px;
+}
+button{
+  width:100%;
+  padding:12px;
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover{
+  background:#1d4ed8;
+}
+.result{
+  margin-top:20px;
+  padding:16px;
+  border-radius:8px;
+  text-align:center;
+}
+.pending{
+  background:#fef3c7;
+  color:#d97706;
+}
+.success{
+  background:#dcfce7;
+  color:#15803d;
+}
+.none{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+.back{
+  display:block;
+  text-align:center;
+  margin-top:20px;
+  color:#2563eb;
+  text-decoration:none;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="box">
+    <h2>🔍 查询你的订单状态</h2>
+    <form method="get">
+      <label>输入购买的商品名称：</label>
+      <input type="text" name="goodsName" placeholder="例如：商品A" required>
+      <button type="submit">查询订单</button>
+    </form>
+
+    <% if(result){ %>
+    <div class="result <%=result.class%>">
+      <%=result.text%>
+    </div>
+    <% } %>
+
+    <a class="back" href="/">← 返回商品首页</a>
+  </div>
+</div>
+</body>
+</html>
