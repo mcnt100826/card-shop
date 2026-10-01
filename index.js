@@ -1,77 +1,49 @@
-const express = require('express');
-const ejs = require('ejs');
-const multer = require('multer');
-const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcryptjs');
-const path = require('path');
+<div class="container" style="max-width:900px;margin:30px auto;padding:0 15px;font-family:system-ui">
+  <!-- 商家名称 -->
+  <div style="text-align:center;margin-bottom:20px">
+    <h1 style="color:#222">🍵 Matcha Latte</h1>
+    <p style="color:#666">在线自助下单平台</p>
+  </div>
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+  <!-- 公告栏 -->
+  <div style="background:#fff3cd;border:1px solid #ffecb5;padding:16px;border-radius:8px;margin-bottom:24px">
+    <h4 style="margin:0 0 8px 0;color:#856404">📢 店铺公告</h4>
+    <p style="margin:0;color:#856404">
+      1. 下单成功后，请保存订单编号，用来查询审核状态<br>
+      2. 审核时段：每日 10:00 - 22:00，请耐心等待处理<br>
+      3. 如有疑问，请联系客服咨询
+    </p>
+  </div>
 
-//模板引擎
-app.set('view engine','ejs');
-app.set('views',path.join(__dirname,'views'));
-app.use(express.urlencoded({extended:true}));
-app.use(express.static(path.join(__dirname,'public')));
+  <!-- 商品分类 -->
+  <div style="margin-bottom:24px">
+    <h3>📦 商品分类</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <span style="background:#007bff;color:white;padding:6px 14px;border-radius:20px">全部商品</span>
+      <span style="background:#28a745;color:white;padding:6px 14px;border-radius:20px">卡密类</span>
+      <span style="background:#dc3545;color:white;padding:6px 14px;border-radius:20px">账号类</span>
+      <span style="background:#6c757d;color:white;padding:6px 14px">道具类</span>
+    </div>
+  </div>
 
-//数据库
-const db = new sqlite3.Database('./shop.db');
-db.serialize(()=>{
-  db.run(`CREATE TABLE IF NOT EXISTS goods(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    price TEXT,
-    desc TEXT
-  )`);
-  db.run(`CREATE TABLE IF NOT EXISTS orders(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    goodsId INTEGER,
-    payImg TEXT,
-    status TEXT DEFAULT 'pending'
-  )`);
-  db.run(`CREATE TABLE IF NOT EXISTS admin(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    pwd TEXT
-  )`);
-  db.get("SELECT * FROM admin",(err,row)=>{
-    if(!row){
-      const hash = bcrypt.hashSync("123456",10);
-      db.run(`INSERT INTO admin(pwd) VALUES(?)`,hash);
-    }
-  })
-})
+  <!-- 商品列表，自动读取后台goodsList商品 -->
+  <h3>🛒 选购商品</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
+    <% goodsList.forEach(function(item){ %>
+      <div style="border:1px solid #eee;border-radius:10px;padding:16px">
+        <h4 style="margin:0 0 8px 0"><%= item.name %></h4>
+        <p style="color:red;font-size:20px;margin:0 0 12px 0"><%= item.price %></p>
+        <form action="/submit-order" method="post">
+          <input type="hidden" name="goodsName" value="<%= item.name %>">
+          <input type="hidden" name="price" value="<%= item.price %>">
+          <button type="submit" style="width:100%;padding:8px;background:#007bff;color:white;border:none;border-radius:6px;cursor:pointer">立即下单</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
 
-//首页
-app.get('/',(req,res)=>{
-  db.all("SELECT * FROM goods",(err,goods)=>{
-    res.render('index',{goods})
-  })
-})
-
-//管理员登录
-app.get('/admin',(req,res)=>res.render('login'))
-app.post('/admin/login',(req,res)=>{
-  const {pwd} = req.body;
-  db.get("SELECT pwd FROM admin",(err,row)=>{
-    if(bcrypt.compareSync(pwd,row.pwd)){
-      req.session = {isAdmin:true};
-      res.redirect('/admin/dashboard')
-    }else{
-      res.send('密码错误 <a href="/admin">返回</a>')
-    }
-  })
-})
-
-//订单提交
-const upload = multer({dest:'public/upload/'})
-app.post('/buy',upload.single('payimg'),(req,res)=>{
-  const {goodsId} = req.body;
-  const payImg = req.file.path;
-  db.run("INSERT INTO orders(goodsId,payImg) VALUES(?,?)",[goodsId,payImg],()=>{
-    res.send("提交成功，等待商家审核");
-  })
-})
-
-app.listen(PORT,()=>{
-  console.log(`running at port ${PORT}`)
-})
+  <!-- 订单查询入口 -->
+  <div style="margin-top:30px;text-align:center">
+    <a href="/search" style="padding:10px 20px;background:#28a745;color:white;border-radius:8px;text-decoration:none">🔍 查询订单状态</a>
+  </div>
+</div>
