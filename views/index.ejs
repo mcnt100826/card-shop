@@ -1,24 +1,56 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>商品商店</title>
+<meta charset="utf-8">
+<title>商品列表</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui;}
+body{background:#f3f4f6;padding:20px;}
+h1{text-align:center;margin-bottom:30px;color:#222;}
+.goods-card{
+  background:#fff;
+  border-radius:12px;
+  padding:20px;
+  max-width:500px;
+  margin:15px auto;
+  box-shadow:0 2px 10px #00000015;
+}
+.goods-card h3{font-size:20px;margin-bottom:8px;}
+.price{color:#e53e3e;font-weight:bold;font-size:18px;margin-bottom:12px;}
+.upload-area{margin:10px 0;}
+button{
+  background:#3b82f6;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-top:8px;
+}
+button:hover{background:#2563eb;}
+.admin-link{
+  display:block;
+  text-align:center;
+  margin-top:30px;
+  font-size:16px;
+}
+</style>
 </head>
 <body>
-    <h2>商品列表</h2>
-    <% goods.forEach(item=>{ %>
-        <div style="border:1px solid #ccc;padding:10px;margin:8px;">
-            <h3><%=item.name%></h3>
-            <p>价格：<%=item.price%></p>
-            <p><%=item.desc%></p>
-            <form action="/buy" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="goodsId" value="<%=item.id%>">
-                <p>上传付款截图：<input type="file" name="payimg" required></p>
-                <button type="submit">提交订单等待审核</button>
-            </form>
-        </div>
-    <% }) %>
-    <br>
-    <a href="/admin">管理员后台登录</a>
+<h1>商品列表</h1>
+
+<% goods.forEach(item=>{ %>
+<div class="goods-card">
+  <h3><%=item.name %></h3>
+  <div class="price">价格：<%=item.price %></div>
+  <div class="upload-area">
+    <label>上传付款截图：</label>
+    <input type="file">
+  </div>
+  <button>提交订单等待审核</button>
+</div>
+<% }) %>
+
+<a href="/admin" class="admin-link">管理员后台登录</a>
 </body>
 </html>
