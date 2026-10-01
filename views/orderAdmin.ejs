@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>订单管理后台</title>
+<title>订单管理</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui, sans-serif;}
 body{
@@ -32,7 +32,7 @@ h1{
   background:#ffffff;
   border-radius:14px;
   box-shadow:0 4px 16px rgba(0,0,0,0.08);
-  overflow:hidden;
+  padding:24px;
 }
 table{
   width:100%;
@@ -54,17 +54,6 @@ td{
 tr:hover{
   background:#f8fafc;
 }
-.del-btn{
-  background-color:#ef4444;
-  color:#fff;
-  border:none;
-  padding:7px 12px;
-  border-radius:6px;
-  cursor:pointer;
-}
-.del-btn:hover{
-  background:#dc2626;
-}
 .ok-btn{
   background-color:#22c55e;
   color:#fff;
@@ -72,22 +61,26 @@ tr:hover{
   padding:7px 12px;
   border-radius:6px;
   cursor:pointer;
-  margin-right:6px;
+  font-size:14px;
 }
 .ok-btn:hover{
   background:#16a34a;
 }
-.empty-tip{
-  text-align:center;
-  padding:40px;
-  color:#64748b;
-  font-size:16px;
+.del-btn{
+  background-color:#ef4444;
+  color:#fff;
+  border:none;
+  padding:7px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:14px;
+}
+.del-btn:hover{
+  background:#dc2626;
 }
 .status-tag{
-  display:inline-block;
-  padding:4px 10px;
-  border-radius:20px;
-  font-size:14px;
+  padding:6px 10px;
+  border-radius:6px;
 }
 .pending{
   background:#fef3c7;
@@ -97,13 +90,18 @@ tr:hover{
   background:#dcfce7;
   color:#15803d;
 }
+.empty-tip{
+  text-align:center;
+  padding:30px;
+  color:#64748b;
+}
 </style>
 </head>
 <body>
 <div class="container">
   <h1>📋 订单管理后台</h1>
   <a class="back-link" href="/logout" style="float:right;">🚪退出登录</a>
-a class="back-link" href="/goods-admin">🛒商品管理</a>
+  <a class="back-link" href="/goods-admin">🛒商品管理</a>
   <a class="back-link" href="/">← 返回商品首页</a>
 
   <div class="card">
@@ -115,6 +113,7 @@ a class="back-link" href="/goods-admin">🛒商品管理</a>
         <tr>
           <th>订单编号</th>
           <th>商品名称</th>
+          <th>商品价格</th>
           <th>订单状态</th>
           <th>操作</th>
         </tr>
@@ -129,7 +128,7 @@ a class="back-link" href="/goods-admin">🛒商品管理</a>
             <% if(item.status === "ok"){ %>
               <span class="status-tag success">✅ 已审核通过</span>
             <% }else{ %>
-              <span class="status-tag pending">⏳ 待审核</span>
+              <span class="status-tag pending">⏳待审核</span>
             <% } %>
           </td>
           <td>
