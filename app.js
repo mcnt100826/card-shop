@@ -25,6 +25,11 @@ function checkLogin(req,res,next){
 
 // 内存存储订单
 let orderList = []
+// 内存存储商品【初始两个商品】
+let goodsList = [
+  {name:"商品A",price:"10元"},
+  {name:"商品B",price:"20元"}
+]
 
 // 生成订单编号函数 ORD+时间戳+随机4位数字
 function createOrderId(){
@@ -35,10 +40,6 @@ function createOrderId(){
 
 // 首页
 app.get('/', (req, res) => {
-  const goodsList = [
-    {name:"商品A",price:"10元"},
-    {name:"商品B",price:"20元"}
-  ]
   res.render('index',{goods:goodsList})
 })
 
@@ -81,6 +82,25 @@ app.post('/admin',(req,res)=>{
 app.get('/order-admin', checkLogin, (req,res)=>{
   res.render('orderAdmin',{orders:orderList})
 })
+
+// ==========【新增商品管理路由】==========
+// 商品管理页面
+app.get('/goods-admin', checkLogin, (req,res)=>{
+  res.render('goodsAdmin',{goodsList})
+})
+// 添加商品
+app.post('/add-goods', checkLogin, (req,res)=>{
+  const {name,price} = req.body
+  goodsList.push({name,price})
+  res.redirect('/goods-admin')
+})
+// 删除商品
+app.post('/del-goods/:idx', checkLogin, (req,res)=>{
+  const index = req.params.idx
+  goodsList.splice(index,1)
+  res.redirect('/goods-admin')
+})
+// ======================================
 
 // 提交订单接口，自动生成订单号
 app.post('/submit-order',(req,res)=>{
