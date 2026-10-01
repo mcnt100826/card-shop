@@ -23,15 +23,14 @@ function checkLogin(req,res,next){
   }
 }
 
-// 内存存储订单
+// 内存存储
 let orderList = []
-// 内存存储商品【初始两个商品】
 let goodsList = [
   {name:"商品A",price:"10元"},
   {name:"商品B",price:"20元"}
 ]
 
-// 生成订单编号函数 ORD+时间戳+随机4位数字
+// 生成订单号
 function createOrderId(){
   const timestamp = Date.now()
   const rand = Math.floor(Math.random()*10000).toString().padStart(4,'0')
@@ -43,7 +42,7 @@ app.get('/', (req, res) => {
   res.render('index',{goods:goodsList})
 })
 
-// 订单查询页面（按订单号查找）
+// 订单查询页面
 app.get('/search', (req, res) => {
   let result = null
   const searchOrderId = req.query.orderId
@@ -62,7 +61,7 @@ app.get('/search', (req, res) => {
   res.render('search',{result})
 })
 
-// 管理员登录页面
+// 管理员登录页
 app.get('/admin',(req,res)=>{
   res.render('admin')
 })
@@ -74,7 +73,7 @@ app.post('/admin',(req,res)=>{
     req.session.isLogin = true;
     res.redirect('/order-admin')
   }else{
-    res.send("<h1>❌账号密码错误</h1><a href='/admin'>重新登录</a>")
+    res.send("<h1>账号密码错误</h1><a href='/admin'>返回登录</a>")
   }
 })
 
@@ -83,26 +82,36 @@ app.get('/order-admin', checkLogin, (req,res)=>{
   res.render('orderAdmin',{orders:orderList})
 })
 
-// ==========【新增商品管理路由】==========
-// 商品管理页面
+// ==========商品管理路由==========
 app.get('/goods-admin', checkLogin, (req,res)=>{
   res.render('goodsAdmin',{goodsList})
 })
-// 添加商品
 app.post('/add-goods', checkLogin, (req,res)=>{
   const {name,price} = req.body
   goodsList.push({name,price})
   res.redirect('/goods-admin')
 })
-// 删除商品
 app.post('/del-goods/:idx', checkLogin, (req,res)=>{
   const index = req.params.idx
   goodsList.splice(index,1)
   res.redirect('/goods-admin')
 })
-// ======================================
 
-// 提交订单接口，自动生成订单号
+// ==========【新增：导出订单接口】==========
+app.get('/export-order', checkLogin, (req,res)=>{
+  // 设置下载头，文件名为orders.csv
+  res.setHeader('Content-Type','text/csv;charset=utf-8')
+  res.setHeader('Content-Disposition','attachment;filename=orders.csv')
+  // 表头
+  let csv = "订单编号,商品名称,商品价格,订单状态\n"
+  orderList.forEach(item=>{
+    const statusText = item.status === "ok" ? "已审核通过" : "待审核"
+    csv += `${item.orderId},${item.goodsName},${item.price},${statusText}\n`
+  })
+  res.send(csv)
+})
+
+// 提交订单
 app.post('/submit-order',(req,res)=>{
   const {goodsName,price} = req.body
   const newOrderId = createOrderId()
@@ -112,7 +121,6 @@ app.post('/submit-order',(req,res)=>{
     orderId: newOrderId,
     status:"pending"
   })
-  // 提交成功，展示订单号，提醒用户保存
   res.send(`
     <h2>✅订单提交成功！</h2>
     <p style="font-size:20px;color:blue">你的订单编号：<strong>${newOrderId}</strong></p>
@@ -121,14 +129,14 @@ app.post('/submit-order',(req,res)=>{
   `)
 })
 
-// 审核通过接口
+// 审核通过
 app.post('/audit-order/:idx', checkLogin, (req,res)=>{
   const index = req.params.idx
   orderList[index].status = "ok"
   res.redirect('/order-admin')
 })
 
-// 删除订单接口
+// 删除订单
 app.post('/del-order/:idx', checkLogin, (req,res)=>{
   const index = req.params.idx
   orderList.splice(index,1)
@@ -138,9 +146,9 @@ app.post('/del-order/:idx', checkLogin, (req,res)=>{
 // 退出登录
 app.get('/logout',(req,res)=>{
   req.session.destroy()
-  res.send("<h2>✅已退出登录</h2><a href='/'>返回首页</a>")
+  res.send("<h2>✅已退出登录</h2><a href='/'>登录后台</a>")
 })
 
 app.listen(port, () => {
-  console.log(`服务启动`)
+  console.log(`服务启动，端口：${port}`)
 })
