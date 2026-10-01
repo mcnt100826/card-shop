@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Shop</title>
+</head>
+<body>
+    <!-- 页面内容，其他ejs页面的代码会渲染在这里 -->
+    <%- body %>
+
+<!-- ========== 主题切换代码（不用改） ========== -->
+<style>
+/* 悬浮开关按钮 */
+.theme-toggle-btn {
+  position: fixed;
+  top: 80px;
+  right: 15px;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:none;
+  background:#333;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  z-index:1000;
+  box-shadow:0 2px 12px #00000026;
+}
+/* 主题面板 */
+.theme-panel {
+  position: fixed;
+  top: 80px;
+  right: 15px;
+  background: #fff;
+  padding:16px;
+  border-radius:12px;
+  box-shadow: 0 4px 20px #00000022;
+  width:260px;
+  z-index:999;
+  transition: 0.3s;
+  display:none; /* 默认隐藏面板 */
+}
+.theme-panel.show{
+  display:block;
+}
+.theme-panel h4{margin:0 0 10px;}
+.grad-list{
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  gap:8px;
+  margin-bottom:12px;
+}
+.grad-item{
+  height:36px;
+  border-radius:6px;
+  cursor:pointer;
+  border:2px solid transparent;
+}
+.grad-item.active{border-color:#222;}
+.color-inputs{
+  display:flex;gap:8px;margin:10px 0;
+}
+.color-inputs input{width:50%;}
+#applyCustom{
+  width:100%;padding:6px;border:none;border-radius:6px;
+  background:#333;color:white;cursor:pointer;
+}
+/* 深色模式 */
+body.dark-mode{
+  color:#f1f1f1;
+}
+body.dark-mode .theme-panel{
+  background:#222;
+  color:#fff;
+}
+.mode-switch{
+  margin-bottom:12px;
+  display:flex;
+  gap:10px;
+}
+.mode-switch button{
+  flex:1;
+  padding:6px;
+  border-radius:6px;
+  border:1px solid #999;
+  background:transparent;
+  cursor:pointer;
+}
+.mode-switch button.active{
+  background:#333;
+  color:#fff;
+  border-color:#333;
+}
+body.dark-mode .mode-switch button.active{
+  background:#fff;
+  color:#222;
+}
+body.dark-mode .theme-toggle-btn{
+  background:#fff;
+  color:#222;
+}
+</style>
+
+<!-- 悬浮开关按钮 -->
+<button class="theme-toggle-btn" id="toggleBtn">🎨</button>
+<!-- 主题面板 -->
+<div class="theme-panel" id="themePanel">
+  <h4>🎨 主题设置</h4>
+  <div class="mode-switch">
+    <button id="lightBtn">浅色</button>
+    <button id="darkBtn">深色</button>
+  </div>
+  <p style="margin:8px 0;font-size:13px">预设渐变</p>
+  <div class="grad-list">
+    <div class="grad-item" style="background:linear-gradient(135deg,#667eea,#764ba2)" data-grad="linear-gradient(135deg,#667eea,#764ba2)"></div>
+    <div class="grad-item" style="background:linear-gradient(135deg,#f093fb,#f5576c)" data-grad="linear-gradient(135deg,#f093fb,#f5576c)"></div>
+    <div class="grad-item" style="background:linear-gradient(135deg,#4facfe,#00f2fe)" data-grad="linear-gradient(135deg,#4facfe,#00f2fe)"></div>
+    <div class="grad-item" style="background:linear-gradient(135deg,#43e97b,#38f9d7)" data-grad="linear-gradient(135deg,#43e97b,#38f9d7)"></div>
+    <div class="grad-item" style="background:linear-gradient(135deg,#fa709a,#fee140)" data-grad="linear-gradient(135deg,#fa709a,#fee140)"></div>
+    <div class="grad-item" style="background:linear-gradient(135deg,#a8e063,#56ab2f)" data-grad="linear-gradient(135deg,#a8e063,#56ab2f)"></div>
+  </div>
+  <p style="margin:8px 0;font-size:13px">自定义渐变</p>
+  <div class="color-inputs">
+    <input type="color" id="color1" value="#667eea">
+    <input type="color" id="color2" value="#764ba2">
+  </div>
+  <button id="applyCustom">应用自定义渐变</button>
+</div>
+
+<script>
+const toggleBtn = document.getElementById('toggleBtn');
+const themePanel = document.getElementById('themePanel');
+const gradItems = document.querySelectorAll('.grad-item');
+const color1 = document.getElementById('color1');
+const color2 = document.getElementById('color2');
+const applyBtn = document.getElementById('applyCustom');
+const lightBtn = document.getElementById('lightBtn');
+const darkBtn = document.getElementById('darkBtn');
+
+// 面板展开收起切换
+toggleBtn.onclick = function(){
+  themePanel.classList.toggle('show');
+}
+
+// 读取本地保存
+let saveGrad = localStorage.getItem('siteBgGrad');
+let saveMode = localStorage.getItem('siteMode');
+
+// 加载背景渐变
+if(saveGrad){
+  document.body.style.background = saveGrad;
+  document.body.style.backgroundAttachment = 'fixed';
+}
+// 加载深浅色模式
+if(saveMode === 'dark'){
+  document.body.classList.add('dark-mode');
+  darkBtn.classList.add('active');
+}else{
+  lightBtn.classList.add('active');
+}
+
+// 浅色模式
+lightBtn.onclick = function(){
+  document.body.classList.remove('dark-mode');
+  localStorage.setItem('siteMode','light');
+  lightBtn.classList.add('active');
+  darkBtn.classList.remove('active');
+}
+// 深色模式
+darkBtn.onclick = function(){
+  document.body.classList.add('dark-mode');
+  localStorage.setItem('siteMode','dark');
+  darkBtn.classList.add('active');
+  lightBtn.classList.remove('active');
+}
+
+// 预设渐变点击
+gradItems.forEach(item=>{
+  item.onclick = function(){
+    const grad = this.dataset.grad;
+    document.body.style.background = grad;
+    document.body.style.backgroundAttachment = 'fixed';
+    localStorage.setItem('siteBgGrad', grad);
+    gradItems.forEach(i=>i.classList.remove('active'));
+    this.classList.add('active');
+  }
+})
+
+// 自定义渐变
+applyBtn.onclick = function(){
+  const g = `linear-gradient(135deg,${color1.value},${color2.value})`;
+  document.body.style.background = g;
+  document.body.style.backgroundAttachment = 'fixed';
+  localStorage.setItem('siteBgGrad',g);
+}
+</script>
+</body>
+</html>
