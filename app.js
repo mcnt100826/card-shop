@@ -2,10 +2,12 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
-// 解析表单提交数据
+// 表单解析
 app.use(express.urlencoded({extended:true}))
-// 设置模板引擎ejs
 app.set('view engine','ejs')
+
+// 【内存存储订单，重启服务全部清空！学习用】
+let orderList = []
 
 // 首页
 app.get('/', (req, res) => {
@@ -16,23 +18,44 @@ app.get('/', (req, res) => {
   res.render('index',{goods:goodsList})
 })
 
-// 后台登录页面GET访问
+// 管理员登录页面
 app.get('/admin',(req,res)=>{
   res.render('admin')
 })
 
-// 处理登录提交（简单演示账号密码 admin / 123456）
+// 登录提交
 app.post('/admin',(req,res)=>{
   const {user,pwd} = req.body
   if(user === "admin" && pwd === "123456"){
-    res.send("<h1>✅登录成功！后台管理页面（你可以继续扩展订单列表）</h1><a href='/'>返回首页</a>")
+    // 登录成功跳转到订单管理页面
+    res.redirect('/order-admin')
   }else{
     res.send("<h1>❌账号密码错误</h1><a href='/admin'>重新登录</a>")
   }
 })
 
+// 订单管理后台页面
+app.get('/order-admin',(req,res)=>{
+  res.render('orderAdmin',{orders:orderList})
+})
+
+// 提交订单接口
+app.post('/submit-order',(req,res)=>{
+  const {goodsName,price} = req.body
+  orderList.push({goodsName,price})
+  res.send("<h2>✅订单提交成功！等待管理员审核</h2><a href='/'>返回首页</a>")
+})
+
+// 删除订单接口
+app.post('/del-order/:idx',(req,res)=>{
+  const index = req.params.idx
+  orderList.splice(index,1)
+  res.redirect('/order-admin')
+})
+
 app.listen(port, () => {
   console.log(`服务启动`)
 })
+
 
 
